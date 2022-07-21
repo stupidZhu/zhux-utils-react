@@ -1,7 +1,6 @@
 import classNames from "classnames"
 import React, { useImperativeHandle, useRef } from "react"
-import { ClassStyle } from "zhux-utils"
-import { IRef, WithChildren } from "../../type"
+import { ClassStyle, IRef, WithChildren } from "../../type"
 import useWatchEffect from "../effects/useWatchEffect/useWatchEffect"
 import useScrollUtil, { UseScrollUtilProps } from "./useScrollUtil"
 

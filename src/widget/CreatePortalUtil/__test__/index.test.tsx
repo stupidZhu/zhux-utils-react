@@ -6,6 +6,24 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import React from "react"
 import CreatePortalUtil from "../CreatePortalUtil"
 
+const createPortalUtil = new CreatePortalUtil({ renderType: "portal", rootKey: "uniqueKey-portalRoot" })
+
+const TestCom: React.FC<{
+  _key?: string
+  _visible?: boolean
+  _createPortalUtil?: CreatePortalUtil
+}> = props => {
+  const { _key, _visible, _createPortalUtil } = props
+  return (
+    <div data-testid="test-com">
+      <button data-testid="close-btn" onClick={() => _createPortalUtil?.remove(_key ?? "")}>
+        x
+      </button>
+      <span data-testid="visible-value">{String(_visible)}</span>
+    </div>
+  )
+}
+
 const originalError = console.error
 beforeAll(() => {
   console.error = (...args) => {
@@ -24,24 +42,6 @@ describe("CreatePortalUtil", () => {
     expect(CreatePortalUtil).toBeDefined()
   })
 
-  const createPortalUtil = new CreatePortalUtil({ renderType: "portal", rootKey: "hello-world" })
-
-  const TestCom: React.FC<{
-    _key?: string
-    _visible?: boolean
-    _createPortalUtil?: CreatePortalUtil
-  }> = props => {
-    const { _key, _visible, _createPortalUtil } = props
-    return (
-      <div data-testid="test-com">
-        <button data-testid="close-btn" onClick={() => _createPortalUtil?.remove(_key ?? "")}>
-          x
-        </button>
-        <span data-testid="visible-value">{String(_visible)}</span>
-      </div>
-    )
-  }
-
   beforeAll(() => {
     jest.useFakeTimers()
   })
@@ -49,6 +49,7 @@ describe("CreatePortalUtil", () => {
   test("测试 add 方法的各参数（不传 key 的情况，key 一致的情况，key 一致但允许 replace 的情况）；测试 remove 和 clear 方法。", () => {
     render(<createPortalUtil.PortalRoot />)
     const keys: Set<string> = new Set()
+    expect(document.querySelector("#uniqueKey-portalRoot")).toBeInTheDocument()
 
     expect(createPortalUtil.getKeys().size).toBe(0)
     act(() => {
@@ -57,7 +58,10 @@ describe("CreatePortalUtil", () => {
 
     expect(screen.queryByTestId("test1")).not.toBeInTheDocument()
     jest.advanceTimersByTime(20)
-    expect(screen.queryByTestId("test1")).toBeInTheDocument()
+
+    // expect(screen.queryByTestId("test1")).toBeInTheDocument()
+    const a = screen.queryByTestId("test1")
+    debugger
     expect(createPortalUtil.getKeys()).toEqual(keys)
 
     act(() => {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react"
-import { ITimer } from "zhux-utils"
+import { ITimer } from "zhux-utils/es/type"
 import { IRef } from "../../type"
 import { getCurrent } from "../../util"
 import useWatchEffect from "../effects/useWatchEffect/useWatchEffect"

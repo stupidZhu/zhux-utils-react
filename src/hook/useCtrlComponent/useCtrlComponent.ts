@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
-import { IObj } from "zhux-utils"
+import { IObj } from "zhux-utils/es/type"
 
 export interface UseCtrlComponentOptions<T = any> {
   defaultValuePropName?: string

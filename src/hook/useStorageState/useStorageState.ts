@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { IObj, StorageUtil } from "zhux-utils"
+import { StorageUtil } from "zhux-utils"
+import { IObj } from "zhux-utils/es/type"
 import { useConfigContext } from "../../component/ConfigProvider/ConfigProvider"
 
 const _storageUtil = new StorageUtil("ZU")

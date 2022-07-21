@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { IObj } from "zhux-utils"
+import { IObj } from "zhux-utils/es/type"
 
 const useWhyDidYouRender = (key: React.Key, props: IObj) => {
   const prevProps = useRef(props)

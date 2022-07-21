@@ -18,6 +18,8 @@
     "declarationDir": "es",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "jsx": "react",
+    "suppressImplicitAnyIndexErrors": true,
   },
   "include": [
     "src",

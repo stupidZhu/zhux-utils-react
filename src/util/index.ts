@@ -1,3 +1,5 @@
+import { cloneDeep } from "lodash"
+import { IObj } from "zhux-utils/es/type"
 import { IRef, LikeNull } from "../type"
 
 export const getCurrent = <T extends {} = any>(ref: IRef<T> | LikeNull): T | LikeNull => {
@@ -27,4 +29,41 @@ export const randomStr = (e = 32) => {
   let str = ""
   for (let i = 0; i < e; i++) str += t.charAt(Math.floor(Math.random() * a))
   return str
+}
+
+export interface Pid2ChildrenOption {
+  idStr?: string
+  pidStr?: string
+  childrenStr?: string
+  customField?: IObj
+}
+
+export const pid2children = <T extends {} = IObj>(
+  data: T[],
+  { idStr = "id", pidStr = "pid", childrenStr = "children", customField = {} }: Pid2ChildrenOption = {}
+) => {
+  const map: IObj = {},
+    res: T[] = [],
+    _data: T[] = cloneDeep(data),
+    broIdsMap: IObj<React.Key[]> = {}
+
+  _data.forEach(item => {
+    item = Object.assign(item, { _isLeaf: true, _level: 0, ...customField })
+    map[item[idStr]] = item
+  })
+
+  _data.forEach(item => {
+    const p = map[item[pidStr]]
+    if (p) {
+      p[childrenStr] ? p[childrenStr].push(item) : (p[childrenStr] = [item])
+      broIdsMap[p[idStr]] ? broIdsMap[p[idStr]].push(item[idStr]) : (broIdsMap[p[idStr]] = [item[idStr]])
+      item["_broIds"] = broIdsMap[p[idStr]]
+      item["_level"] = p["_level"] + 1
+      p["_isLeaf"] = false
+      p["_expanded"] = false
+      p["_halfChecked"] = false
+    } else res.push(item)
+  })
+
+  return [res, map] as const
 }

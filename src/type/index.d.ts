@@ -9,4 +9,10 @@ export interface ClassStyle {
   style?: React.CSSProperties
 }
 
+export interface CommonComProps<T = any> extends ClassStyle {
+  value?: T
+  defaultValue?: T
+  onChange?: (value: T) => void
+}
+
 export as namespace ZhuxUtilReact

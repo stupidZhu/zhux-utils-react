@@ -1,21 +1,21 @@
 import React, { createContext, useCallback, useContext, useRef } from "react"
-import { StorageUtil } from "zhux-utils"
+import { StorageHelper } from "zhux-utils"
 import { WithChildren } from "../../type"
 
 const ConfigContext = createContext<{
   getMaxZIndex?: () => string
   addKey?: (key: React.Key) => void
   delKey?: (key: React.Key) => void
-  storageUtil?: StorageUtil
+  storageHelper?: StorageHelper
 } | null>(null)
 
 interface ConfigProviderProps extends WithChildren {
   initMaxZIndex?: number
-  storageUtil?: StorageUtil
+  storageHelper?: StorageHelper
 }
 
 export const ConfigProvider: React.FC<ConfigProviderProps> = props => {
-  const { children, initMaxZIndex = 1000, storageUtil } = props
+  const { children, initMaxZIndex = 1000, storageHelper } = props
   const maxZIndex = useRef<number>(initMaxZIndex)
   const dialogCollection = useRef<Set<React.Key>>(new Set([]))
 
@@ -34,7 +34,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = props => {
     [initMaxZIndex]
   )
 
-  return <ConfigContext.Provider value={{ getMaxZIndex, addKey, delKey, storageUtil }}>{children}</ConfigContext.Provider>
+  return <ConfigContext.Provider value={{ getMaxZIndex, addKey, delKey, storageHelper }}>{children}</ConfigContext.Provider>
 }
 
 export const useConfigContext = () => {

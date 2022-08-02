@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react-hooks"
 import React from "react"
-import { StorageUtil } from "zhux-utils"
+import { StorageHelper } from "zhux-utils"
 import { ConfigProvider } from "../../../component/ConfigProvider/ConfigProvider"
 import { WithChildren } from "../../../type"
 import useStorageState from "../useStorageState"
@@ -37,10 +37,10 @@ describe("useStorageState", () => {
     expect(result.current[0]).toEqual({ str: "helloStorage", num: 100, arr: [2, 3, 4], obj: { hello: "world" } })
   })
 
-  const storageUtil1 = new StorageUtil("CUSTOM1")
-  const storageUtil2 = new StorageUtil("CUSTOM2")
+  const storageHelper1 = new StorageHelper("CUSTOM1")
+  const storageHelper2 = new StorageHelper("CUSTOM2")
   const wrapper: React.FC<WithChildren> = ({ children }) => (
-    <ConfigProvider storageUtil={storageUtil1}>{children}</ConfigProvider>
+    <ConfigProvider storageHelper={storageHelper1}>{children}</ConfigProvider>
   )
 
   test("with ConfigProvider", () => {
@@ -52,8 +52,8 @@ describe("useStorageState", () => {
     expect(localStorage.getItem("CUSTOM1_TEST")).not.toBeNull()
   })
 
-  test("with customStorageUtil", () => {
-    renderHook(() => useStorageState("TEST", defaultValue, storageUtil2), {
+  test("with customStorageHelper", () => {
+    renderHook(() => useStorageState("TEST", defaultValue, storageHelper2), {
       wrapper,
     })
 

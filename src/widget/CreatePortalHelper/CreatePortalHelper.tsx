@@ -32,9 +32,9 @@ const formatConfigMap: FormatMap<WrapperConfig> = {
   removeDelay: value => formatInt(value, { defaultVal: 300, min: 0 }),
 }
 
-const WrapperCom: React.FC<{ wrapperRef?: { current: Record<string, any> }; createPortalUtil: CreatePortalUtil }> = ({
+const WrapperCom: React.FC<{ wrapperRef?: { current: Record<string, any> }; createPortalHelper: CreatePortalHelper }> = ({
   wrapperRef,
-  createPortalUtil,
+  createPortalHelper,
 }) => {
   const portalMapRef = useRef<PortalMap>(new Map())
   const keySetRef = useRef<Set<string>>(new Set())
@@ -60,7 +60,11 @@ const WrapperCom: React.FC<{ wrapperRef?: { current: Record<string, any> }; crea
     }
 
     return isComponent(portal.com)
-      ? React.cloneElement(portal.com!, { _key: portal.key, _visible: portal.visible, _createPortalUtil: createPortalUtil })
+      ? React.cloneElement(portal.com!, {
+          _key: portal.key,
+          _visible: portal.visible,
+          _createPortalHelper: createPortalHelper,
+        })
       : portal.com
   }, [])
 
@@ -162,7 +166,7 @@ const DefaultPortalRoot: React.FC = () => {
   return null
 }
 
-type CreatePortalUtilProps =
+type CreatePortalHelperProps =
   | {
       rootKey?: string
       renderType: "portal"
@@ -173,26 +177,26 @@ type CreatePortalUtilProps =
       Provider?: React.FC<WithChildren>
     }
 
-class CreatePortalUtil {
+class CreatePortalHelper {
   private rootKey: string
   private wrapperRef: { current: WrapperRef } = { current: {} }
   private renderType: "portal" | "render" = "render"
   PortalRoot = DefaultPortalRoot
 
-  constructor(props: CreatePortalUtilProps = { renderType: "render" }) {
+  constructor(props: CreatePortalHelperProps = { renderType: "render" }) {
     this.rootKey = props.rootKey ?? `portal-root-${randomStr(5)}-${Date.now()}`
     this.renderType = props.renderType
     if (props.renderType === "portal") {
       this.PortalRoot = () =>
         ReactDOM.createPortal(
-          <WrapperCom key={this.rootKey} wrapperRef={this.wrapperRef} createPortalUtil={this} />,
+          <WrapperCom key={this.rootKey} wrapperRef={this.wrapperRef} createPortalHelper={this} />,
           this.getRootDom()
         )
     } else {
       const Provider = props.Provider ?? (({ children }) => <>{children}</>)
       ReactDOM.render(
         <Provider>
-          <WrapperCom key={this.rootKey} wrapperRef={this.wrapperRef} createPortalUtil={this} />
+          <WrapperCom key={this.rootKey} wrapperRef={this.wrapperRef} createPortalHelper={this} />
         </Provider>,
         this.getRootDom()
       )
@@ -238,4 +242,4 @@ class CreatePortalUtil {
   getKeys = () => new Set(this.wrapperRef.current?.keySetRef?.current)
 }
 
-export default CreatePortalUtil
+export default CreatePortalHelper

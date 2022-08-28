@@ -4747,10 +4747,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zhux-utils@^0.1.15:
-  version "0.1.15"
-  resolved "https://registry.npmjs.org/zhux-utils/-/zhux-utils-0.1.15.tgz#c7b6634da6d05b19197441bf2433e33763fcd7d6"
-  integrity sha512-uV6spiLLsWyHktXqI9cfX2VJRo2OvqNaFyMz2DyykhNgg4dR9nYawpN/3BrJ2bjeBU2uiXQ5t4AIS8p/Mku62g==
+zhux-utils@^0.1.16:
+  version "0.1.16"
+  resolved "https://registry.npmjs.org/zhux-utils/-/zhux-utils-0.1.16.tgz#6f21a071519a8afce0894a95f4ec50ede2430fa7"
+  integrity sha512-1J0JiNvZnGjUykbJRk4KK0LPyMvntadWD6mg9WBzso5SpuENmo/TWxz9nq9tZSMFmdhzGCvt4gNYGS7xm2No7w==
   dependencies:
     dayjs "^1.11.3"
     lodash "^4.17.21"

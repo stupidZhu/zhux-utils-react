@@ -1,8 +1,9 @@
 import { cloneDeep } from "lodash"
 import React, { useCallback } from "react"
+import { IObj } from "zhux-utils/es/type"
 import useCtrlComponent from "../useCtrlComponent/useCtrlComponent"
 
-export type CustomFieldItem = { type?: React.Key; id: React.Key; label: React.Key; value: any }
+export type CustomFieldItem = { type?: React.Key; id: React.Key; label: React.Key; value: any } & IObj
 export type ChangeFieldFunc = (changeType: "value" | "label" | "type" | "del" | "add", index?: number, value?: any) => void
 type CheckNullFunc = (properties?: Array<keyof CustomFieldItem>) => {
   flag: boolean

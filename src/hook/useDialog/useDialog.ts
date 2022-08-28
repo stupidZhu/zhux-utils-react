@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react"
+import { CSSProperties, useCallback, useEffect, useRef } from "react"
 import { useConfigContext } from "../../component/ConfigProvider/ConfigProvider"
 import { IRef } from "../../type"
 import { getCurrent } from "../../util"
@@ -7,8 +7,16 @@ import useWatchEffect from "../effects/useWatchEffect/useWatchEffect"
 export type IPosition = { top: number; left: number }
 export type ISize = { width: number; height: number }
 
-export type DialogMoveFunc = (position: IPosition, mousePosition: IPosition) => void
-export type DialogResizeFunc = (size: ISize, mousePosition: IPosition) => void
+export type DialogMoveCb = (props: {
+  type: "moving" | "moveStart" | "moveEnd"
+  position: IPosition
+  mousePosition: IPosition
+}) => void
+export type DialogResizeCb = (props: {
+  type: "resizing" | "resizeStart" | "resizeEnd"
+  size: ISize
+  mousePosition: IPosition
+}) => void
 
 export interface UseDialogProps {
   dialogRef: IRef<HTMLElement>
@@ -16,12 +24,13 @@ export interface UseDialogProps {
   resizeFieldRef?: IRef<HTMLElement>
   minSize?: ISize
   confine?: boolean
-  onMove?: DialogMoveFunc
-  onMoveStart?: DialogMoveFunc
-  onMoveEnd?: DialogMoveFunc
-  onResize?: DialogResizeFunc
-  onResizeStart?: DialogResizeFunc
-  onResizeEnd?: DialogResizeFunc
+  moveCb?: DialogMoveCb
+  resizeCb?: DialogResizeCb
+}
+
+const resetStyle = (dom: HTMLElement) => {
+  const style: CSSProperties = { position: "fixed", right: "unset", bottom: "unset" }
+  Object.entries(style).forEach(([k, v]) => (dom.style[k] = v))
 }
 
 const useDialog = (props: UseDialogProps) => {
@@ -31,17 +40,14 @@ const useDialog = (props: UseDialogProps) => {
     resizeFieldRef,
     minSize = { width: 200, height: 150 },
     confine = true,
-    onMove,
-    onMoveStart,
-    onMoveEnd,
-    onResize,
-    onResizeStart,
-    onResizeEnd,
+    moveCb,
+    resizeCb,
   } = props
   const { width: minWidth, height: minHeight } = minSize
   const { getMaxZIndex, addKey, delKey } = useConfigContext()
   // 代表鼠标坐标到 dialog 左上角的 offset
   const { current: offset } = useRef({ x: 0, y: 0 })
+  const { current: resetStyleFlag } = useRef({ move: false, resize: false })
   const uniqueKey = useRef(Date.now() + Math.random())
 
   const stateRef = useRef<{ isMoving: boolean; isResizing: boolean }>({ isMoving: false, isResizing: false })
@@ -56,14 +62,15 @@ const useDialog = (props: UseDialogProps) => {
       offset.x = clientX - box.offsetLeft
       offset.y = clientY - box.offsetTop
 
-      let paramState: Parameters<DialogMoveFunc> = [
+      let paramState: [IPosition, IPosition] = [
         { left: clientX - offset.x, top: clientY - offset.y },
         { left: clientX, top: clientY },
       ]
-      onMoveStart?.(...paramState)
+      moveCb?.({ type: "moveStart", position: paramState[0], mousePosition: paramState[1] })
 
       document.onmouseup = () => {
-        onMoveEnd?.(...paramState)
+        moveCb?.({ type: "moveEnd", position: paramState[0], mousePosition: paramState[1] })
+        resetStyleFlag.move = false
         document.onmousemove = null
         document.onmouseup = null
         setTimeout(() => (stateRef.current.isMoving = false))
@@ -76,12 +83,8 @@ const useDialog = (props: UseDialogProps) => {
 
         if (confine) {
           // 不允许超出屏幕
-          if (x > window.innerWidth - box.offsetWidth) {
-            x = window.innerWidth - box.offsetWidth
-          }
-          if (y > window.innerHeight - box.offsetHeight) {
-            y = window.innerHeight - box.offsetHeight
-          }
+          if (x > window.innerWidth - box.offsetWidth) x = window.innerWidth - box.offsetWidth
+          if (y > window.innerHeight - box.offsetHeight) y = window.innerHeight - box.offsetHeight
           if (x < 0) x = 0
           if (y < 0) y = 0
         }
@@ -89,14 +92,19 @@ const useDialog = (props: UseDialogProps) => {
         box.style.left = x + "px"
         box.style.top = y + "px"
 
+        if (!resetStyleFlag.move) {
+          resetStyleFlag.move = true
+          resetStyle(box)
+        }
+
         paramState = [
           { left: x, top: y },
           { left: e.clientX, top: e.clientY },
         ]
-        onMove?.(...paramState)
+        moveCb?.({ type: "moving", position: paramState[0], mousePosition: paramState[1] })
       }
     },
-    [dialogRef, offset, onMove]
+    [dialogRef, offset, moveCb]
   )
 
   const resizeFunc = useCallback(
@@ -110,14 +118,14 @@ const useDialog = (props: UseDialogProps) => {
       if (!box) return
       box.style.zIndex = getMaxZIndex?.() ?? "1000"
 
-      let paramState: Parameters<DialogResizeFunc> = [
+      let paramState: [ISize, IPosition] = [
         { width: clientX - box.offsetLeft + offsetX, height: clientY - box.offsetTop + offsetY },
         { left: clientX, top: clientY },
       ]
-      onResizeStart?.(...paramState)
+      resizeCb?.({ type: "resizeStart", size: paramState[0], mousePosition: paramState[1] })
 
       document.onmouseup = () => {
-        onResizeEnd?.(...paramState)
+        resizeCb?.({ type: "resizeEnd", size: paramState[0], mousePosition: paramState[1] })
         document.onmousemove = null
         document.onmouseup = null
         setTimeout(() => (stateRef.current.isResizing = false))
@@ -139,10 +147,10 @@ const useDialog = (props: UseDialogProps) => {
           { width, height },
           { left: e.clientX, top: e.clientY },
         ]
-        onResize?.(...paramState)
+        resizeCb?.({ type: "resizing", size: paramState[0], mousePosition: paramState[1] })
       }
     },
-    [dialogRef, minHeight, minWidth, onResize]
+    [dialogRef, minHeight, minWidth, resizeCb]
   )
 
   useWatchEffect((el, prevEl) => {
@@ -163,9 +171,7 @@ const useDialog = (props: UseDialogProps) => {
   useEffect(() => {
     const key = uniqueKey.current
     addKey?.(key)
-    return () => {
-      delKey?.(key)
-    }
+    return () => delKey?.(key)
   }, [])
 
   return stateRef.current

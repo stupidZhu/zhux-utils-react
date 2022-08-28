@@ -194,14 +194,19 @@ const useScrollUtil = (props: UseScrollUtilProps) => {
       el.addEventListener("scroll", handleScroll)
       el.addEventListener("mouseenter", onMouseEnter)
       el.addEventListener("mouseleave", onMouseLeave)
+      el.addEventListener("touchstart", onMouseEnter)
+      el.addEventListener("touchend", onMouseLeave)
+      el.addEventListener("touchcancel", onMouseLeave)
     }
     if (prevEl) {
       prevEl.removeEventListener("scroll", handleScroll)
       prevEl.removeEventListener("mouseenter", onMouseEnter)
       prevEl.removeEventListener("mouseleave", onMouseLeave)
+      prevEl.removeEventListener("touchstart", onMouseEnter)
+      prevEl.removeEventListener("touchend", onMouseLeave)
+      prevEl.removeEventListener("touchcancel", onMouseLeave)
     }
   }, scrollDom)
-
   useEffect(() => {
     return () => {
       timerRef.current && clearInterval(timerRef.current)

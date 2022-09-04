@@ -27,7 +27,7 @@ describe("useOnceEffect", () => {
     expect(clearFn).toHaveBeenCalledTimes(1)
   })
 
-  test("符合条件时触发", () => {
+  test("符合条件时触发 1", () => {
     const fn = jest.fn()
     const clearFn = jest.fn()
     let condition = false
@@ -48,6 +48,35 @@ describe("useOnceEffect", () => {
     expect(fn).not.toHaveBeenCalled()
     expect(clearFn).not.toHaveBeenCalled()
     condition = true
+    rerender()
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(clearFn).not.toHaveBeenCalled()
+    rerender()
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(clearFn).toHaveBeenCalledTimes(1)
+  })
+
+  test("符合条件时触发 2", () => {
+    const fn = jest.fn()
+    const clearFn = jest.fn()
+    const condition = { current: false }
+    const { rerender } = renderHook(() => {
+      useOnceEffect(
+        () => {
+          fn()
+          return () => {
+            clearFn()
+          }
+        },
+        undefined,
+        condition
+      )
+    })
+    expect(fn).not.toHaveBeenCalled()
+    rerender()
+    expect(fn).not.toHaveBeenCalled()
+    expect(clearFn).not.toHaveBeenCalled()
+    condition.current = true
     rerender()
     expect(fn).toHaveBeenCalledTimes(1)
     expect(clearFn).not.toHaveBeenCalled()

@@ -1,6 +1,6 @@
 {
   "name": "zhux-utils-react",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "module": "es/index.js",
   "types": "es/index.d.ts",

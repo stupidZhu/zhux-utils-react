@@ -1,11 +1,13 @@
 import classNames from "classnames"
 import React, { useImperativeHandle, useRef } from "react"
 import { ClassStyle, IRef, WithChildren } from "../../type"
-import useWatchEffect from "../effects/useWatchEffect/useWatchEffect"
+import { useWatchRefEffect } from "../effects/useWatchEffect/useWatchEffect"
 import useScrollUtil, { UseScrollUtilProps } from "./useScrollUtil"
 
-interface ScrollWrapperProps extends ClassStyle, Omit<UseScrollUtilProps, "scrollDom"> {
-  scrollRef?: { current: ReturnType<typeof useScrollUtil> | undefined }
+export type ScrollRef = { current: ReturnType<typeof useScrollUtil> | undefined }
+
+export interface ScrollWrapperProps extends ClassStyle, Omit<UseScrollUtilProps, "scrollDom"> {
+  scrollRef?: ScrollRef
 }
 
 const ScrollWrapper: React.FC<ScrollWrapperProps & WithChildren> = props => {
@@ -18,7 +20,7 @@ const ScrollWrapper: React.FC<ScrollWrapperProps & WithChildren> = props => {
     ...rest,
   })
 
-  useWatchEffect(c => {
+  useWatchRefEffect(c => {
     if (c?.style) {
       c.style[rest.scrollType === "horizontal" ? "minWidth" : "minHeight"] = `calc(100% + ${
         (rest.reachThreshold ?? 20) + 1

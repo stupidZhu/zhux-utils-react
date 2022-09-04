@@ -34,23 +34,21 @@ describe("useDialog", () => {
       useDialog({
         dialogRef: () => getByTestId("dialog"),
         moveFieldRef: () => getByTestId("move-field"),
-        onMove: () => func("onMove"),
-        onMoveStart: () => func("onMoveStart"),
-        onMoveEnd: () => func("onMoveEnd"),
+        moveCb: ({ type }) => func(type),
       })
     )
 
     fireEvent.mouseDown(getByTestId("move-field"))
-    expect(func).toHaveBeenCalledWith("onMoveStart")
+    expect(func).toHaveBeenCalledWith("moveStart")
 
     act(() => {
       document.dispatchEvent(new MouseEvent("mousemove", { clientX: 200, clientY: 200, screenX: 200, screenY: 200 }))
     })
-    expect(func).toHaveBeenCalledWith("onMove")
+    expect(func).toHaveBeenCalledWith("moving")
     expect(result.current.isMoving).toBe(true)
 
     fireEvent.mouseUp(getByTestId("move-field"))
-    expect(func).toHaveBeenCalledWith("onMoveEnd")
+    expect(func).toHaveBeenCalledWith("moveEnd")
     expect(getByTestId("dialog")).toHaveStyle({ left: "200px", top: "200px" })
   })
 
@@ -66,23 +64,21 @@ describe("useDialog", () => {
       useDialog({
         dialogRef: () => getByTestId("dialog"),
         resizeFieldRef: () => getByTestId("resize-field"),
-        onResize: () => func("onResize"),
-        onResizeStart: () => func("onResizeStart"),
-        onResizeEnd: () => func("onResizeEnd"),
+        resizeCb: ({ type }) => func(type),
       })
     )
 
     fireEvent.mouseDown(getByTestId("resize-field"))
-    expect(func).toHaveBeenCalledWith("onResizeStart")
+    expect(func).toHaveBeenCalledWith("resizeStart")
 
     act(() => {
       document.dispatchEvent(new MouseEvent("mousemove", { clientX: 200, clientY: 200, screenX: 200, screenY: 200 }))
     })
-    expect(func).toHaveBeenCalledWith("onResize")
+    expect(func).toHaveBeenCalledWith("resizing")
     expect(result.current.isResizing).toBe(true)
 
     fireEvent.mouseUp(getByTestId("resize-field"))
-    expect(func).toHaveBeenCalledWith("onResizeEnd")
+    expect(func).toHaveBeenCalledWith("resizeEnd")
     expect(getByTestId("dialog")).toHaveStyle({ height: "205px", width: "205px" })
   })
 

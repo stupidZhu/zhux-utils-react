@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 import { ITimer } from "zhux-utils/es/type"
 import { IRef } from "../../type"
 import { getCurrent } from "../../util"
-import useWatchEffect from "../effects/useWatchEffect/useWatchEffect"
+import { useWatchRefEffect } from "../effects/useWatchEffect/useWatchEffect"
 
 // offsetWidth/offsetHeight：scrollWrapper 宽高
 // scrollHeight/scrollWidth：scrollChildren 宽高
@@ -188,7 +188,7 @@ const useScrollUtil = (props: UseScrollUtilProps) => {
   const onMouseEnter = useCallback(() => (hoverFlag.current = true), [])
   const onMouseLeave = useCallback(() => (hoverFlag.current = false), [])
 
-  useWatchEffect((el, prevEl) => {
+  useWatchRefEffect((el, prevEl) => {
     if (el) {
       el.style.overflow = "auto"
       el.addEventListener("scroll", handleScroll)

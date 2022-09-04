@@ -1,11 +1,10 @@
 import { cloneDeep } from "lodash"
 import { IObj } from "zhux-utils/es/type"
-import { IRef, LikeNull } from "../type"
+import { IRef } from "../type"
 
-export const getCurrent = <T extends {} = any>(ref: IRef<T> | LikeNull): T | LikeNull => {
-  if (!ref) return
+export const getCurrent = <T = any>(ref: IRef<T>) => {
   if (typeof ref === "function") return ref()
-  return ref.current
+  return ref?.current
 }
 
 interface FormatIntProps {

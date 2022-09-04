@@ -2,7 +2,7 @@ import { CSSProperties, useCallback, useEffect, useRef } from "react"
 import { useConfigContext } from "../../component/ConfigProvider/ConfigProvider"
 import { IRef } from "../../type"
 import { getCurrent } from "../../util"
-import useWatchEffect from "../effects/useWatchEffect/useWatchEffect"
+import { useWatchRefEffect } from "../effects/useWatchEffect/useWatchEffect"
 
 export type IPosition = { top: number; left: number }
 export type ISize = { width: number; height: number }
@@ -44,7 +44,9 @@ const useDialog = (props: UseDialogProps) => {
     resizeCb,
   } = props
   const { width: minWidth, height: minHeight } = minSize
-  const { getMaxZIndex, addKey, delKey } = useConfigContext()
+  const { dialogField } = useConfigContext() ?? {}
+  const { getMaxZIndex, addKey, delKey } = dialogField ?? {}
+
   // 代表鼠标坐标到 dialog 左上角的 offset
   const { current: offset } = useRef({ x: 0, y: 0 })
   const { current: resetStyleFlag } = useRef({ move: false, resize: false })
@@ -153,12 +155,12 @@ const useDialog = (props: UseDialogProps) => {
     [dialogRef, minHeight, minWidth, resizeCb]
   )
 
-  useWatchEffect((el, prevEl) => {
+  useWatchRefEffect((el, prevEl) => {
     el?.addEventListener("mousedown", moveFunc)
     prevEl?.removeEventListener("mousedown", moveFunc)
   }, moveFieldRef)
 
-  useWatchEffect((el, prevEl) => {
+  useWatchRefEffect((el, prevEl) => {
     el?.addEventListener("mousedown", resizeFunc)
     prevEl?.removeEventListener("mousedown", resizeFunc)
   }, resizeFieldRef)

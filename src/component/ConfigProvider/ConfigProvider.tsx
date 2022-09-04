@@ -1,13 +1,20 @@
 import React, { createContext, useCallback, useContext, useRef } from "react"
 import { StorageHelper } from "zhux-utils"
+import { reactStorageHelper } from "../../bootstrap"
 import { WithChildren } from "../../type"
 
-const ConfigContext = createContext<{
-  getMaxZIndex?: () => string
-  addKey?: (key: React.Key) => void
-  delKey?: (key: React.Key) => void
-  storageHelper?: StorageHelper
-} | null>(null)
+interface ConfigContextDialogField {
+  getMaxZIndex(): string
+  addKey(key: React.Key): void
+  delKey(key: React.Key): void
+}
+
+interface ConfigContextType {
+  dialogField: ConfigContextDialogField
+  storageHelper: StorageHelper
+}
+
+const ConfigContext = createContext<ConfigContextType | null>(null)
 
 interface ConfigProviderProps extends WithChildren {
   initMaxZIndex?: number
@@ -15,7 +22,7 @@ interface ConfigProviderProps extends WithChildren {
 }
 
 export const ConfigProvider: React.FC<ConfigProviderProps> = props => {
-  const { children, initMaxZIndex = 1000, storageHelper } = props
+  const { children, initMaxZIndex = 1000, storageHelper = reactStorageHelper } = props
   const maxZIndex = useRef<number>(initMaxZIndex)
   const dialogCollection = useRef<Set<React.Key>>(new Set([]))
 
@@ -34,14 +41,15 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = props => {
     [initMaxZIndex]
   )
 
-  return <ConfigContext.Provider value={{ getMaxZIndex, addKey, delKey, storageHelper }}>{children}</ConfigContext.Provider>
+  return (
+    <ConfigContext.Provider value={{ dialogField: { getMaxZIndex, addKey, delKey }, storageHelper }}>
+      {children}
+    </ConfigContext.Provider>
+  )
 }
 
 export const useConfigContext = () => {
   const context = useContext(ConfigContext)
-  if (!context) {
-    console.warn("请使用 ConfigProvider 以体验 useDialog 完整功能。")
-    return {}
-  }
+  if (!context) console.warn("请使用 ConfigProvider 以体验 zhux-utils-react 完整功能。")
   return context
 }

@@ -1,6 +1,6 @@
 export { ConfigProvider, useConfigContext } from "./component/ConfigProvider/ConfigProvider"
 export { default as useOnceEffect } from "./hook/effects/useOnceEffect/useOnceEffect"
-export { default as useWatchEffect } from "./hook/effects/useWatchEffect/useWatchEffect"
+export { useWatchEffect, useWatchRefEffect } from "./hook/effects/useWatchEffect/useWatchEffect"
 export { default as useCtrlComponent } from "./hook/useCtrlComponent/useCtrlComponent"
 export { default as useCustomFields } from "./hook/useCustomFields/useCustomFields"
 export { default as useDateTime } from "./hook/useDateTime/useDateTime"

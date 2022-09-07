@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { StorageHelper } from "zhux-utils"
-import { IObj } from "zhux-utils/es/type"
+import { IObj } from "zhux-utils/dist/type"
 import { reactStorageHelper } from "../../bootstrap"
 import { useConfigContext } from "../../component/ConfigProvider/ConfigProvider"
 

@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react-hooks"
-import { IObj } from "zhux-utils/es/type"
+import { IObj } from "zhux-utils/dist/type"
 import useCtrlComponent from "../useCtrlComponent"
 
 describe("useCtrlComponent", () => {

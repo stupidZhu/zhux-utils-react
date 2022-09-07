@@ -13,9 +13,9 @@
     ],
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
-    "outDir": "es",
+    "outDir": "dist",
     "declaration": true,
-    "declarationDir": "es",
+    "declarationDir": "dist",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "jsx": "react",
@@ -27,7 +27,7 @@
   ],
   "exclude": [
     "node_modules",
-    "es",
+    "dist",
     "src/**/__test__",
   ]
 }

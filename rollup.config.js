@@ -9,14 +9,14 @@ import typescript from "rollup-plugin-typescript2"
 
 export default defineConfig({
   input: "src/index.ts",
-  output: [{ file: "es/index.min.js", format: "esm", inlineDynamicImports: true }],
+  output: [{ file: "dist/index.umd.js", format: "umd", name: "ZhuxUtilReact" }],
   plugins: [
     autoExternal(),
     resolve(),
     commonjs(),
     typescript({ tsconfigOverride: { compilerOptions: { declaration: false } } }),
-    copy({ targets: [{ src: "src/type", dest: "es" }] }),
+    copy({ targets: [{ src: "src/type", dest: "dist" }] }),
     terser(),
-    clear({ targets: ["es"] }),
+    clear({ targets: ["dist"] }),
   ],
 })

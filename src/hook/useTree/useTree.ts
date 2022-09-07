@@ -1,6 +1,6 @@
 import { cloneDeep, isEqual } from "lodash"
 import { Key, useCallback, useEffect, useRef, useState } from "react"
-import { IObj } from "zhux-utils/es/type"
+import { IObj } from "zhux-utils/dist/type"
 import { pid2children } from "../../util"
 import useCtrlComponent from "../useCtrlComponent/useCtrlComponent"
 

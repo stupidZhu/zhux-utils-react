@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { IObj } from "zhux-utils/es/type"
+import { IObj } from "zhux-utils/dist/type"
 
 const useStoreState = <T extends IObj = IObj>(value: T) => {
   const [state, _setState] = useState(value)

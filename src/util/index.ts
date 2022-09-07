@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash"
-import { IObj } from "zhux-utils/es/type"
+import { IObj } from "zhux-utils/dist/type"
 import { IRef } from "../type"
 
 export const getCurrent = <T = any>(ref: IRef<T>) => {
